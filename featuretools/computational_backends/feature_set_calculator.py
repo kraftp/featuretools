@@ -18,7 +18,6 @@ from featuretools.feature_base import (
 )
 from featuretools.utils import Trie, is_python_2
 from featuretools.utils.gen_utils import get_relationship_variable_id
-import time
 
 warnings.simplefilter('ignore', np.RankWarning)
 warnings.simplefilter("ignore", category=RuntimeWarning)
@@ -377,7 +376,7 @@ class FeatureSetCalculator(object):
     def _calculate_identity_features(self, features, df, _df_trie):
         for f in features:
             assert f.get_name() in df, (
-                    'Column "%s" missing frome dataframe' % f.get_name())
+                'Column "%s" missing frome dataframe' % f.get_name())
 
         return df
 
@@ -593,7 +592,6 @@ class FeatureSetCalculator(object):
             # Apply the aggregate functions to generate a new dataframe, and merge
             # it with the existing one
             if len(to_agg):
-                t0 = time.time()
                 # groupby_var can be both the name of the index and a column,
                 # to silence pandas warning about ambiguity we explicitly pass
                 # the column (in actuality grouping by both index and group would
@@ -612,9 +610,6 @@ class FeatureSetCalculator(object):
 
                 frame = pd.merge(left=frame, right=to_merge,
                                  left_index=True, right_index=True, how='left')
-                t1 = time.time()
-                print("Feature %s Aggregation time: %f  Input length: %d  Output length: %d" %
-                      (str(features), (t1 - t0), len(base_frame), len(frame)))
 
         # Handle default values
         fillna_dict = {}
@@ -680,7 +675,6 @@ def agg_wrapper(feats, time_last):
             update_feature_columns(f, d, values)
 
         return pd.Series(d)
-
     return wrap
 
 
